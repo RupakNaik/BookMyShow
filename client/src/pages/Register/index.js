@@ -1,14 +1,33 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { Link } from 'react-router-dom'
+import {RegisterUser} from '../../api/users';
 
 function Register() {
+    // async function to get form values onFinish 
+    const onFinish = async (values) =>{
+        try{
+            // call the RegisterUser function which we imported from api folder
+            const response = await RegisterUser(values);
+            if(response.success){
+                console.log("User registered successfully");
+                message.success(response.message);
+            }else{
+                console.warn(`Registration failed: ${response.message}`);
+                message.error(response.message);
+            }
+        }catch(err){
+            console.error("An error occurred while registering the user:", err);
+            message.error("An error occurred while registering the user");
+        }
+    }
+
     return (
         <>
             <main className='App-header'>
                 <h1>Register to BookMyShow</h1>
                 <section className='mw-500 text-center px-3'>
-                    <Form layout="vertical" className="login-form">
+                    <Form layout="vertical" className="login-form" onFinish={onFinish}>
                         {/* user name input field */}
                         <Form.Item
                             label="Username"
